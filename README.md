@@ -3,7 +3,35 @@
 A functional description with some example on how to call REST APIs with the REST Subscriber Adapter in SAS ESP including calling the REST API of SAS Intelligent Decisioning.
 
 ## Table of Contents
-[TOC]
+
+
+* [Overview](#overview)
+            * [REST API Post](#rest-api-post)
+                        * [POSTRequest](#postrequest)
+                        * [POSTResponse](#postresponse)
+            * [REST API Post with opaque JSON](#rest-api-post-with-opaque-json) 
+                        * [ReadInputCSV](#readinputcsv)
+                        * [RESTPostAndWritesCallDataInCSV](#restpostandwritescalldataincsv)
+                        * [RESTResponse](#restresponse)
+                        * [WritesResponseInCSV](#writesresponseincsv)
+                        * [FilterResponseIDTOKEN](#filterresponseidtoken)
+            * [REST API Post to SAS Intelligent Decisioning with opaque JSON and token](#rest-api-post-to-sas-intelligent-decisioning--with-opaque-json-and-token) 
+                        * [Prerequisites SAS Viya Token](#prerequisites-sas-viya-token)
+                        * [Prerequisites SAS Intelligent Decisioning](#prerequisites-sas-intelligent-decisioning)
+                        * [REST API Post to SAS Intelligent Decisioning Model overview](#rest-api-post-to-sas-intelligent-decisioning-model-overview)
+                        * [ReadToken](#readtoken)
+                        * [ReadInputCSV](#readinputcsv)
+                        * [Join](#join)
+                        * [RESTPostAndWritesCallDataInCSV](#restpostandwritescalldataincsv)
+                        * [RESTResponse](#restresponse)
+                        * [WritesResponseInCSV](#writesresponseincsv)
+                        * [FilterResponseIDTOKEN](#filterresponseidtoken)
+            * [REST API Post to SAS Intelligent Decisioning in Viya 4](#rest-api-post-to-sas-intelligent-decisioning--in-viya-4)   
+* [Summary](#summary)   
+* [Contributing](#contributing)
+* [License](#license)
+* [Additional Resources](#additional-resources)
+                        
 
 ## Overview
 The objective is to complement the official SAS documentation of the REST Subscriber Adapter https://go.documentation.sas.com/doc/en/espcdc/v_021/espca/n0jm4fbcrh370on1j3d4w0xpl9xr.htm?homeOnFail
