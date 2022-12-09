@@ -1,0 +1,49 @@
+<project name="RESTPost" threads="1" pubsub="auto" heartbeat-interval="1">
+  <metadata>
+    <meta id="studioUploadedBy">anonymousUser</meta>
+    <meta id="studioUploaded">1646318071139</meta>
+    <meta id="studioModifiedBy">anonymousUser</meta>
+    <meta id="studioModified">1647948566306</meta>
+    <meta id="layout">{"cq1":{"POSTRequest":{"x":-65,"y":-400},"POSTResponse":{"x":220,"y":-400}}}</meta>
+  </metadata>
+  <contqueries>
+    <contquery name="cq1">
+      <windows>
+        <window-source name="POSTRequest">
+          <schema>
+            <fields>
+              <field name="email" type="string" key="true"/>
+              <field name="password" type="string" key="true"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="CSVConnector">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="transactional"><![CDATA[true]]></property>
+                <property name="fsname"><![CDATA[/opt/tutorials/files/registersRESTTest.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+            <connector class="adapter" name="RESTPost">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="command"><![CDATA[dfesp_rest_subscriber -C resturl=https://reqres.in/api/register,httpcontenttype=application/json,url=dfESP://<yourespserver>:31416/RESTPost/cq1/POSTRequest?snapshot=true,esprespurl=dfESP://<yourespserver>:31416/RESTPost/cq1/POSTResponse,ignorefailedhttpconnects=false,httpstatuscodes=200,201]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-source pubsub="true" name="POSTResponse">
+          <schema>
+            <fields>
+              <field name="email" type="string" key="true"/>
+              <field name="password" type="string" key="true"/>
+              <field name="id" type="int32"/>
+              <field name="token" type="string"/>
+            </fields>
+          </schema>
+        </window-source>
+      </windows>
+    </contquery>
+  </contqueries>
+</project>

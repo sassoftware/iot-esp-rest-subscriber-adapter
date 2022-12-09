@@ -1,0 +1,152 @@
+<project name="RESTPostID" threads="1" pubsub="auto" heartbeat-interval="1">
+  <metadata>
+    <meta id="studioUploadedBy">anonymousUser</meta>
+    <meta id="studioUploaded">1648496391673</meta>
+    <meta id="studioModifiedBy">anonymousUser</meta>
+    <meta id="studioModified">1648549987029</meta>
+    <meta id="layout">{"cq1":{"FilterResponseIDTOKEN":{"x":310,"y":-185},"Join":{"x":-100,"y":-350},"RESTPostAndWritesCallDataInCSV":{"x":-100,"y":-190},"RESTResponse":{"x":310,"y":-495},"ReadInputCSV":{"x":25,"y":-500},"ReadToken":{"x":-220,"y":-500},"Rest":{"x":-475,"y":-705},"Rest ":{"x":-290,"y":-425},"RestR":{"x":-470,"y":-700},"RestRe":{"x":-465,"y":-695},"RestRes":{"x":-460,"y":-690},"RestRespo":{"x":-455,"y":-685},"RestRespon":{"x":-475,"y":-705},"WritesResponseInCSV":{"x":310,"y":-340}}}</meta>
+  </metadata>
+  <contqueries>
+    <contquery name="cq1" include-singletons="true" trace="readToken">
+      <windows>
+        <window-source pubsub="true" collapse-updates="false" name="ReadInputCSV">
+          <schema>
+            <fields>
+              <field name="keyforjoin" type="string"/>
+              <field name="email" type="string" key="true"/>
+              <field name="password" type="string" key="true"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="CSVConnector">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="transactional"><![CDATA[true]]></property>
+                <property name="fsname"><![CDATA[/opt/tutorials/files/registersID.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-source pubsub="true" collapse-updates="false" name="RESTResponse">
+          <schema>
+            <fields>
+              <field name="email" type="string" key="true"/>
+              <field name="password" type="string" key="true"/>
+              <field name="JSONRESTbody" type="string"/>
+              <field name="tokenforviya" type="string"/>
+              <field name="moduleId" type="string"/>
+              <field name="stepId" type="string"/>
+              <field name="executionState" type="string"/>
+              <field name="outputs_name" type="string"/>
+              <field name="outputs_value" type="string"/>
+            </fields>
+          </schema>
+        </window-source>
+        <window-functional name="RESTPostAndWritesCallDataInCSV">
+          <schema>
+            <fields>
+              <field name="email" type="string" key="true"/>
+              <field name="password" type="string" key="true"/>
+              <field name="JSONRESTbody" type="string"/>
+              <field name="tokenforviya" type="string"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="JSONRESTbody"><![CDATA[concat('{"inputs":[{"name":"email_","value":"',$email,'"},{"name":"password_","value":"',$password,'"}]}')]]></function>
+            </functions>
+          </function-context>
+          <connectors>
+            <connector class="adapter" name="POSTconnector">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="command"><![CDATA[dfesp_rest_subscriber -C url="dfESP://<yourespserver>:31416/RESTPostID/cq1/RESTPostAndWritesCallDataInCSV?snapshot=true",resturl=http://viya3-5.ps-cp.sashq-d.openstack.sas.com/microanalyticScore/modules/rulesemailsimple/steps/execute,httpcontenttype=application/vnd.sas.microanalytic.module.step.input+json,esprespurl="dfESP://<yourespserver>:31416/RESTPostID/cq1/RESTResponse",opaquejson=JSONRESTbody,httprequestproperties="Accept:application/vnd.sas.microanalytic.module.step.output+json",httpstatuscodes=201,tokeneventfield=tokenforviya]]></property>
+              </properties>
+            </connector>
+            <connector class="fs" name="writefile">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/opt/tutorials/files/jsoncalldata.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-functional>
+        <window-copy index="pi_EMPTY" name="WritesResponseInCSV">
+          <connectors>
+            <connector class="fs" name="WriteRESTResponseOutput">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/opt/tutorials/files/RESTResponseOutput.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-copy>
+        <window-functional name="FilterResponseIDTOKEN">
+          <schema>
+            <fields>
+              <field name="email" type="string" key="true"/>
+              <field name="password" type="string" key="true"/>
+              <field name="outputs_name" type="string"/>
+              <field name="outputs_value" type="string"/>
+            </fields>
+          </schema>
+        </window-functional>
+        <window-source name="ReadToken">
+          <schema>
+            <fields>
+              <field name="keyforjoin" type="string" key="true"/>
+              <field name="tokenforviya" type="string"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="ReadTokenCSV">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="fsname"><![CDATA[/opt/tutorials/files/tokenID.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-join name="Join">
+          <join type="leftouter">
+            <conditions>
+              <fields left="keyforjoin" right="keyforjoin"/>
+            </conditions>
+          </join>
+          <output>
+            <field-selection name="tokenforviya" source="r_tokenforviya"/>
+          </output>
+        </window-join>
+      </windows>
+      <edges>
+        <edge source="RESTResponse" target="WritesResponseInCSV"/>
+        <edge source="WritesResponseInCSV" target="FilterResponseIDTOKEN"/>
+        <edge source="ReadInputCSV" target="Join" role="left"/>
+        <edge source="ReadToken" target="Join" role="right"/>
+        <edge source="Join" target="RESTPostAndWritesCallDataInCSV"/>
+      </edges>
+    </contquery>
+  </contqueries>
+  <project-connectors>
+    <connector-groups>
+      <connector-group name="readtoken">
+        <connector-entry connector="cq1/ReadToken/ReadTokenCSV" state="finished"/>
+      </connector-group>
+      <connector-group name="alltherest">
+        <connector-entry connector="cq1/ReadInputCSV/CSVConnector" state="running"/>
+        <connector-entry connector="cq1/RESTPostAndWritesCallDataInCSV/POSTconnector" state="running"/>
+        <connector-entry connector="cq1/RESTPostAndWritesCallDataInCSV/writefile" state="running"/>
+        <connector-entry connector="cq1/WritesResponseInCSV/WriteRESTResponseOutput" state="running"/>
+      </connector-group>
+    </connector-groups>
+    <edges>
+      <edge source="readtoken" target="alltherest"/>
+    </edges>
+  </project-connectors>
+</project>

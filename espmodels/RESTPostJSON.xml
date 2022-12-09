@@ -1,0 +1,99 @@
+<project name="RESTPostJSON" threads="1" pubsub="auto" heartbeat-interval="1">
+  <metadata>
+    <meta id="studioUploadedBy">anonymousUser</meta>
+    <meta id="studioUploaded">1648475746093</meta>
+    <meta id="studioModifiedBy">anonymousUser</meta>
+    <meta id="studioModified">1648475773849</meta>
+    <meta id="layout">{"cq1":{"FilterResponseIDTOKEN":{"x":310,"y":-185},"RESTPostAndWritesCallDataInCSV":{"x":25,"y":-335},"RESTResponse":{"x":310,"y":-495},"ReadInputCSV":{"x":25,"y":-500},"Rest":{"x":-475,"y":-705},"Rest ":{"x":-290,"y":-425},"RestR":{"x":-470,"y":-700},"RestRe":{"x":-465,"y":-695},"RestRes":{"x":-460,"y":-690},"RestRespo":{"x":-455,"y":-685},"RestRespon":{"x":-475,"y":-705},"WritesResponseInCSV":{"x":310,"y":-340}}}</meta>
+  </metadata>
+  <contqueries>
+    <contquery name="cq1" include-singletons="true" trace="readToken">
+      <windows>
+        <window-source pubsub="true" collapse-updates="false" name="ReadInputCSV">
+          <schema>
+            <fields>
+              <field name="email" type="string" key="true"/>
+              <field name="password" type="string" key="true"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="CSVConnector">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="transactional"><![CDATA[true]]></property>
+                <property name="fsname"><![CDATA[/opt/tutorials/files/registersjson.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-source pubsub="true" name="RESTResponse">
+          <schema>
+            <fields>
+              <field name="email" type="string" key="true"/>
+              <field name="password" type="string" key="true"/>
+              <field name="JSONRESTbody" type="string"/>
+              <field name="id" type="int32"/>
+              <field name="token" type="string"/>
+            </fields>
+          </schema>
+        </window-source>
+        <window-functional name="RESTPostAndWritesCallDataInCSV">
+          <schema>
+            <fields>
+              <field name="email" type="string" key="true"/>
+              <field name="password" type="string" key="true"/>
+              <field name="JSONRESTbody" type="string"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="JSONRESTbody"><![CDATA[concat('{"email":"',$email,'","password":"',$password,'"}')]]></function>
+            </functions>
+          </function-context>
+          <connectors>
+            <connector class="adapter" name="POSTconnector">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="command"><![CDATA[dfesp_rest_subscriber -C url="dfESP://<yourespserver>:31416/RESTPostJSON/cq1/RESTPostAndWritesCallDataInCSV?snapshot=true",resturl=https://reqres.in/api/register,httpcontenttype=application/json,esprespurl="dfESP://<yourespserver>.130:31416/RESTPostJSON/cq1/RESTResponse",opaquejson=JSONRESTbody,httpstatuscodes=200,httpcontenttype=application/json]]></property>
+              </properties>
+            </connector>
+            <connector class="fs" name="writefile">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/opt/tutorials/files/jsoncalldata.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-functional>
+        <window-copy index="pi_EMPTY" name="WritesResponseInCSV">
+          <connectors>
+            <connector class="fs" name="WriteRESTResponseOutput">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/opt/tutorials/files/RESTResponseOutput.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-copy>
+        <window-functional name="FilterResponseIDTOKEN">
+          <schema>
+            <fields>
+              <field name="id" type="int32" key="true"/>
+              <field name="token" type="string" key="true"/>
+            </fields>
+          </schema>
+        </window-functional>
+      </windows>
+      <edges>
+        <edge source="RESTResponse" target="WritesResponseInCSV"/>
+        <edge source="ReadInputCSV" target="RESTPostAndWritesCallDataInCSV"/>
+        <edge source="WritesResponseInCSV" target="FilterResponseIDTOKEN"/>
+      </edges>
+    </contquery>
+  </contqueries>
+</project>
