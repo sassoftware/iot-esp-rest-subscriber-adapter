@@ -15,7 +15,7 @@ A functional description with some example on how to call REST APIs with the RES
     * [RESTResponse](#restresponse)
     * [WritesResponseInCSV](#writesresponseincsv)
     * [FilterResponseIDTOKEN](#filterresponseidtoken)
-  * [REST API Post to SAS Intelligent Decisioning with opaque JSON and token](#rest-api-post-to-sas-intelligent-decisioning--with-opaque-json-and-token) 
+  * [REST API Post to SAS Intelligent Decisioning with opaque JSON and token](#rest-api-post-to-sas-intelligent-decisioning-with-opaque-json-and-token) 
     * [Prerequisites SAS Viya Token](#prerequisites-sas-viya-token)
     * [Prerequisites SAS Intelligent Decisioning](#prerequisites-sas-intelligent-decisioning)
     * [REST API Post to SAS Intelligent Decisioning Model overview](#rest-api-post-to-sas-intelligent-decisioning-model-overview)
