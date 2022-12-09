@@ -6,7 +6,7 @@ A functional description with some example on how to call REST APIs with the RES
 
 
 * [Overview](#overview)
-            * [REST API Post](#rest-api-post)
+  * [REST API Post](#rest-api-post)
                         * [POSTRequest](#postrequest)
                         * [POSTResponse](#postresponse)
             * [REST API Post with opaque JSON](#rest-api-post-with-opaque-json) 
